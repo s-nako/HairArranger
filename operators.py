@@ -91,6 +91,19 @@ class HAIR_ARRANGER_OT_start(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class HAIR_ARRANGER_OT_start_arrange(bpy.types.Operator):
+    bl_idname = "hair_arranger.start_arrange"
+    bl_label = "Start hair arranger"
+
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D'
+
+    def execute(self, context):
+        bpy.ops.object.editmode_toggle()
+        return {'FINISHED'}
+
+
 class HAIR_ARRANGER_OT_select_all(bpy.types.Operator):
     bl_idname = "hair_arranger.select_all"
     bl_label = "Start hair arranger"
@@ -134,7 +147,7 @@ class HAIR_ARRANGER_OT_select_all_ends(bpy.types.Operator):
         return {'FINISHED'}
 
 
-classes = [HAIR_ARRANGER_OT_start, HAIR_ARRANGER_OT_select_all,
+classes = [HAIR_ARRANGER_OT_start, HAIR_ARRANGER_OT_select_all, HAIR_ARRANGER_OT_start_arrange,
            HAIR_ARRANGER_OT_select_all_ends, HAIR_ARRANGER_OT_select_all_starts]
 
 

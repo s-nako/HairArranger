@@ -52,6 +52,21 @@ class HAIR_ARRANGER_PT_start_panel(bpy.types.Panel):
                              text='Start')
 
 
+class HAIR_ARRANGER_PT_start_arrange_panel(bpy.types.Panel):
+    bl_label = 'Hair Arranger'
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = 'Hair Arranger'
+
+    @classmethod
+    def poll(cls, context):
+        return bpy.context.object and bpy.context.object.type == 'CURVE' and bpy.context.object.mode != 'EDIT'
+
+    def draw(self, context):
+        self.layout.column(align=True)
+        self.layout.operator('hair_arranger.start_arrange', text='Arrange')
+
+
 class HAIR_ARRANGER_PT_arrange_panel(bpy.types.Panel):
     bl_label = 'Hair Arranger'
     bl_space_type = 'VIEW_3D'
@@ -60,7 +75,7 @@ class HAIR_ARRANGER_PT_arrange_panel(bpy.types.Panel):
 
     @classmethod
     def poll(cls, context):
-        return bpy.context.object and bpy.context.object.type == 'CURVE'
+        return bpy.context.object and bpy.context.object.type == 'CURVE' and bpy.context.object.mode == 'EDIT'
 
     def draw(self, context):
         box = self.layout.box()
@@ -90,7 +105,8 @@ class HAIR_ARRANGER_PT_arrange_panel(bpy.types.Panel):
         row.operator("hair_arranger.select_all_ends", text="Select Ends")
 
 
-classes = [HAIR_ARRANGER_PT_pre_panel, HAIR_ARRANGER_PT_start_panel, HAIR_ARRANGER_PT_arrange_panel]
+classes = [HAIR_ARRANGER_PT_pre_panel, HAIR_ARRANGER_PT_start_panel,
+           HAIR_ARRANGER_PT_arrange_panel, HAIR_ARRANGER_PT_start_arrange_panel]
 
 
 def register():
