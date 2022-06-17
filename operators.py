@@ -17,6 +17,8 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import os
+
 import bpy
 from bpy.types import Operator
 
@@ -33,6 +35,18 @@ class HAIR_ARRANGER_OT_start(bpy.types.Operator):
         obj = bpy.context.object
         if not obj:
             return
+
+        if "HairCurveSamples" not in bpy.data.collections:
+            hair_arranger_dir = os.path.split(__file__)[0]
+            bpy.ops.wm.append(filename="HairCurveSamples",
+                              filepath=os.path.join(hair_arranger_dir, "hair_curves.blend",
+                                                    "Collection", "HairCurveSamples"),
+                              directory=os.path.join(hair_arranger_dir, "hair_curves.blend", "Collection"))
+        x = obj.location.x + obj.dimensions.x*3/5
+        z = obj.location.z + obj.dimensions.z/2
+        for curve in bpy.data.collections["HairCurveSamples"].objects:
+            curve.scale = (0.1, 0.1, 0.1)
+            curve.location = (x, 0.0, z)
 
         # Start draw
         bpy.ops.curve.primitive_bezier_curve_add()

@@ -80,6 +80,7 @@ class HAIR_ARRANGER_PT_arrange_panel(bpy.types.Panel):
         col.prop(bpy.context.object.data, "bevel_resolution", text="Resolution Bevel")
         col.prop(bpy.context.object.data, "bevel_factor_start", text="Bevel Start")
         col.prop(bpy.context.object.data, "bevel_factor_end", text="Bevel End")
+        col.prop(bpy.context.object.data, "bevel_object", text="Object")
 
         box = self.layout.box()
         col = box.column(align=True)
