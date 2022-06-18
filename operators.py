@@ -104,6 +104,28 @@ class HAIR_ARRANGER_OT_start_arrange(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class HAIR_ARRANGER_OT_select_points(bpy.types.Operator):
+    bl_idname = "hair_arranger.select_points"
+    bl_label = "Start hair arranger"
+
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D'
+
+    def execute(self, context):
+        selected_splines = get_selected_curves()
+        print("selected_splines", selected_splines)
+        bpy.ops.curve.select_all(action='DESELECT')
+        for s in selected_splines:
+            if s.type == "BEZIER":
+                for p in s.bezier_points:
+                    p.select_control_point = True
+            else:
+                for p in s.points:
+                    p.select = True
+        return {'FINISHED'}
+
+
 class HAIR_ARRANGER_OT_select_all(bpy.types.Operator):
     bl_idname = "hair_arranger.select_all"
     bl_label = "Start hair arranger"
@@ -128,7 +150,10 @@ class HAIR_ARRANGER_OT_select_all_starts(bpy.types.Operator):
         bpy.ops.curve.select_all(action='DESELECT')
         splines = bpy.context.object.data.splines
         for s in splines:
-            s.bezier_points[0].select_control_point = True
+            if s.type == "BEZIER":
+                s.bezier_points[0].select_control_point = True
+            else:
+                s.points[0].select = True
         return {'FINISHED'}
 
 class HAIR_ARRANGER_OT_select_all_ends(bpy.types.Operator):
@@ -143,12 +168,75 @@ class HAIR_ARRANGER_OT_select_all_ends(bpy.types.Operator):
         bpy.ops.curve.select_all(action='DESELECT')
         splines = bpy.context.object.data.splines
         for s in splines:
-            s.bezier_points[-1].select_control_point = True
+            if s.type == "BEZIER":
+                s.bezier_points[-1].select_control_point = True
+            else:
+                s.points[-1].select = True
+
         return {'FINISHED'}
 
 
-classes = [HAIR_ARRANGER_OT_start, HAIR_ARRANGER_OT_select_all, HAIR_ARRANGER_OT_start_arrange,
-           HAIR_ARRANGER_OT_select_all_ends, HAIR_ARRANGER_OT_select_all_starts]
+class HAIR_ARRANGER_OT_convert_to_nurbs(bpy.types.Operator):
+    bl_idname = "hair_arranger.convert_to_nurbs"
+    bl_label = "Start hair arranger"
+
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D'
+
+    def execute(self, context):
+        bpy.ops.curve.spline_type_set(type='NURBS', use_handles=True)
+        return {'FINISHED'}
+
+
+class HAIR_ARRANGER_OT_remove_end_points(bpy.types.Operator):
+    bl_idname = "hair_arranger.remove_end_points"
+    bl_label = "Start hair arranger"
+
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D'
+
+    def execute(self, context):
+        selected_splines = get_selected_curves()
+
+        bpy.ops.curve.select_all(action='DESELECT')
+        for s in selected_splines:
+            pt = s.points[0]
+            pt.select = True
+            pt = s.points[-1]
+            pt.select = True
+            bpy.ops.curve.delete(type='VERT')
+
+            s.use_bezier_u = False
+            s.use_endpoint_u = True
+
+        return {'FINISHED'}
+
+
+# -------------
+# Utils
+# -------------
+def get_selected_curves():
+    splines = bpy.context.object.data.splines
+    selected_splines = []
+    for s in splines:
+        if s.type == "BEZIER":
+            for p in s.bezier_points:
+                if p.select_control_point or p.select_left_handle or p.select_right_handle:
+                    selected_splines.append(s)
+        else:
+            for p in s.points:
+                if p.select:
+                    selected_splines.append(s)
+                    break
+    return selected_splines
+
+
+classes = [HAIR_ARRANGER_OT_start, HAIR_ARRANGER_OT_start_arrange,
+           HAIR_ARRANGER_OT_select_points, HAIR_ARRANGER_OT_select_all,
+           HAIR_ARRANGER_OT_select_all_ends, HAIR_ARRANGER_OT_select_all_starts,
+           HAIR_ARRANGER_OT_convert_to_nurbs, HAIR_ARRANGER_OT_remove_end_points]
 
 
 def register():

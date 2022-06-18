@@ -78,6 +78,9 @@ class HAIR_ARRANGER_PT_arrange_panel(bpy.types.Panel):
         return bpy.context.object and bpy.context.object.type == 'CURVE' and bpy.context.object.mode == 'EDIT'
 
     def draw(self, context):
+        row = self.layout.row()
+        row.prop(bpy.context.scene.tool_settings, 'use_snap', text='Use Snap')
+
         box = self.layout.box()
         row = box.row(align=True)
         col = row.column(align=True)
@@ -99,10 +102,16 @@ class HAIR_ARRANGER_PT_arrange_panel(bpy.types.Panel):
 
         box = self.layout.box()
         col = box.column(align=True)
-        col.operator("hair_arranger.select_all", text="Select All")
+        col.operator("hair_arranger.select_points", text="Select Spline")
+        col.operator("hair_arranger.select_all", text="Select All Spline")
         row = col.row(align=True)
         row.operator("hair_arranger.select_all_starts", text="Select Starts")
         row.operator("hair_arranger.select_all_ends", text="Select Ends")
+
+        box = self.layout.box()
+        col = box.column()
+        col.operator("hair_arranger.convert_to_nurbs", text="Convert to NURBS")
+        col.operator("hair_arranger.remove_end_points", text="Remove End Points")
 
 
 classes = [HAIR_ARRANGER_PT_pre_panel, HAIR_ARRANGER_PT_start_panel,
