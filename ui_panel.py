@@ -78,12 +78,12 @@ class HAIR_ARRANGER_PT_arrange_panel(bpy.types.Panel):
         return bpy.context.object and bpy.context.object.type == 'CURVE' and bpy.context.object.mode == 'EDIT'
 
     def draw(self, context):
+        col = self.layout.column(align=True)
+        col.prop(bpy.context.scene.tool_settings, 'use_snap', text='Use Snap')
+        col.prop(bpy.context.scene.tool_settings.curve_paint_settings, 'use_stroke_endpoints', text='Snap Only First')
+        col.prop(bpy.context.scene.tool_settings.curve_paint_settings, 'surface_plane', text='Surface')
         row = self.layout.row()
-        row.prop(bpy.context.scene.tool_settings, 'use_snap', text='Use Snap')
-        row = self.layout.row()
-        row.prop(bpy.context.scene.tool_settings.curve_paint_settings, 'use_stroke_endpoints', text='Snap Only First')
-        row = self.layout.row()
-        row.prop(bpy.context.scene.tool_settings.curve_paint_settings, 'surface_plane', text='Surface')
+        row.prop(bpy.context.space_data.overlay, "normals_length", text='Normal Display Length')
 
         box = self.layout.box()
         row = box.row(align=True)
@@ -116,6 +116,9 @@ class HAIR_ARRANGER_PT_arrange_panel(bpy.types.Panel):
         col = box.column()
         col.operator("hair_arranger.convert_to_nurbs", text="Convert to NURBS")
         col.operator("hair_arranger.remove_end_points", text="Remove End Points")
+
+        row = box.row()
+        row.operator("hair_arranger.convert_to_mesh", text="Convert to Mesh")
 
 
 classes = [HAIR_ARRANGER_PT_pre_panel, HAIR_ARRANGER_PT_start_panel,

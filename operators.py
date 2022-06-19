@@ -253,10 +253,32 @@ def _get_selected_curves():
     return selected_splines
 
 
+class HAIR_ARRANGER_OT_convert_to_mesh(bpy.types.Operator):
+    bl_idname = "hair_arranger.convert_to_mesh"
+    bl_label = "Start hair arranger"
+
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D'
+
+    def execute(self, context):
+        # Convert to mesh
+        bpy.ops.object.mode_set(mode='OBJECT')
+        bpy.ops.object.convert(target='MESH')
+
+        # Smooth mesh
+        bpy.ops.object.shade_smooth()
+
+        bpy.ops.object.mode_set(mode='EDIT')
+
+        return {'FINISHED'}
+
+
 classes = [HAIR_ARRANGER_OT_start, HAIR_ARRANGER_OT_start_arrange,
            HAIR_ARRANGER_OT_select_points, HAIR_ARRANGER_OT_select_all,
            HAIR_ARRANGER_OT_select_all_ends, HAIR_ARRANGER_OT_select_all_starts,
-           HAIR_ARRANGER_OT_convert_to_nurbs, HAIR_ARRANGER_OT_remove_end_points]
+           HAIR_ARRANGER_OT_convert_to_nurbs, HAIR_ARRANGER_OT_remove_end_points,
+           HAIR_ARRANGER_OT_convert_to_mesh]
 
 
 def register():
