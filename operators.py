@@ -22,6 +22,9 @@ import os
 import bpy
 from bpy.types import Operator
 
+FILE_NAME = "hair_curves.blend"
+HAIR_CURVE_COLLECTION = "HairCurveSamples"
+ROOT_NAME = "haircurves"
 
 class HAIR_ARRANGER_OT_start(bpy.types.Operator):
     bl_idname = "hair_arranger.start"
@@ -36,17 +39,8 @@ class HAIR_ARRANGER_OT_start(bpy.types.Operator):
         if not obj:
             return
 
-        if "HairCurveSamples" not in bpy.data.collections:
-            hair_arranger_dir = os.path.split(__file__)[0]
-            bpy.ops.wm.append(filename="HairCurveSamples",
-                              filepath=os.path.join(hair_arranger_dir, "hair_curves.blend",
-                                                    "Collection", "HairCurveSamples"),
-                              directory=os.path.join(hair_arranger_dir, "hair_curves.blend", "Collection"))
-        x = obj.location.x + obj.dimensions.x*3/5
-        z = obj.location.z + obj.dimensions.z/2
-        for curve in bpy.data.collections["HairCurveSamples"].objects:
-            curve.scale = (0.1, 0.1, 0.1)
-            curve.location = (x, 0.0, z)
+        if ROOT_NAME not in bpy.data.objects:
+            _append_spline_curves(obj)
 
         # Start draw
         bpy.ops.curve.primitive_bezier_curve_add()
@@ -91,6 +85,35 @@ class HAIR_ARRANGER_OT_start(bpy.types.Operator):
         return {'FINISHED'}
 
 
+def _append_spline_curves(obj):
+    hair_arranger_dir = os.path.split(__file__)[0]
+    bpy.ops.wm.append(filename=HAIR_CURVE_COLLECTION,
+                      filepath=os.path.join(hair_arranger_dir, FILE_NAME,
+                                            "Collection", HAIR_CURVE_COLLECTION),
+                      directory=os.path.join(hair_arranger_dir, "hair_curves.blend", "Collection"))
+    # generate root
+    root = bpy.data.objects.new(ROOT_NAME, None)
+    bpy.context.scene.collection.objects.link(root)
+
+    x = obj.location.x + obj.dimensions.x * 3 / 5
+    z = obj.location.z + obj.dimensions.z / 2
+    root.empty_display_size = 0.1
+    root.location = (x, 0.0, z)
+    for i in range(3):
+        root.lock_rotation[i] = True
+        root.lock_scale[i] = True
+
+    for curve in bpy.data.collections[HAIR_CURVE_COLLECTION].objects:
+        if not curve.name.startswith("haircurve"):
+            continue
+        curve.parent = root
+        curve.scale = (0.1, 0.1, 0.1)
+        bpy.data.collections[HAIR_CURVE_COLLECTION].objects.unlink(curve)
+        bpy.context.scene.collection.objects.link(curve)
+
+    bpy.data.collections.remove(bpy.data.collections[HAIR_CURVE_COLLECTION])
+
+
 class HAIR_ARRANGER_OT_start_arrange(bpy.types.Operator):
     bl_idname = "hair_arranger.start_arrange"
     bl_label = "Start hair arranger"
@@ -113,7 +136,7 @@ class HAIR_ARRANGER_OT_select_points(bpy.types.Operator):
         return context.area.type == 'VIEW_3D'
 
     def execute(self, context):
-        selected_splines = get_selected_curves()
+        selected_splines = _get_selected_curves()
         print("selected_splines", selected_splines)
         bpy.ops.curve.select_all(action='DESELECT')
         for s in selected_splines:
@@ -198,7 +221,7 @@ class HAIR_ARRANGER_OT_remove_end_points(bpy.types.Operator):
         return context.area.type == 'VIEW_3D'
 
     def execute(self, context):
-        selected_splines = get_selected_curves()
+        selected_splines = _get_selected_curves()
 
         bpy.ops.curve.select_all(action='DESELECT')
         for s in selected_splines:
@@ -214,10 +237,7 @@ class HAIR_ARRANGER_OT_remove_end_points(bpy.types.Operator):
         return {'FINISHED'}
 
 
-# -------------
-# Utils
-# -------------
-def get_selected_curves():
+def _get_selected_curves():
     splines = bpy.context.object.data.splines
     selected_splines = []
     for s in splines:

@@ -80,6 +80,10 @@ class HAIR_ARRANGER_PT_arrange_panel(bpy.types.Panel):
     def draw(self, context):
         row = self.layout.row()
         row.prop(bpy.context.scene.tool_settings, 'use_snap', text='Use Snap')
+        row = self.layout.row()
+        row.prop(bpy.context.scene.tool_settings.curve_paint_settings, 'use_stroke_endpoints', text='Snap Only First')
+        row = self.layout.row()
+        row.prop(bpy.context.scene.tool_settings.curve_paint_settings, 'surface_plane', text='Surface')
 
         box = self.layout.box()
         row = box.row(align=True)
