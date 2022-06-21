@@ -29,7 +29,7 @@ class HAIR_ARRANGER_PT_pre_panel(bpy.types.Panel):
 
     @classmethod
     def poll(cls, context):
-         return not bpy.context.object or bpy.context.object.type not in ['MESH', 'CURVE']
+        return not bpy.context.object or bpy.context.object.type not in ['MESH', 'CURVE']
 
     def draw(self, context):
         col = self.layout.column(align=True)
@@ -110,6 +110,7 @@ class HAIR_ARRANGER_PT_arrange_panel(bpy.types.Panel):
         col.operator("hair_arranger.select_all", text="Select All Spline")
         row = col.row(align=True)
         row.operator("hair_arranger.select_all_starts", text="Select Starts")
+        row.operator("hair_arranger.select_all_middles", text="Select Middles")
         row.operator("hair_arranger.select_all_ends", text="Select Ends")
 
         box = self.layout.box()
@@ -117,6 +118,8 @@ class HAIR_ARRANGER_PT_arrange_panel(bpy.types.Panel):
         col.operator("hair_arranger.convert_to_nurbs", text="Convert to NURBS")
         col.operator("hair_arranger.remove_end_points", text="Remove End Points")
 
+        row = box.row()
+        row.operator("hair_arranger.separate_curves", text="Separate Curves")
         row = box.row()
         row.operator("hair_arranger.convert_to_mesh", text="Convert to Mesh")
 

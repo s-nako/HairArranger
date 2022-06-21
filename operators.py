@@ -26,6 +26,7 @@ FILE_NAME = "hair_curves.blend"
 HAIR_CURVE_COLLECTION = "HairCurveSamples"
 ROOT_NAME = "haircurves"
 
+
 class HAIR_ARRANGER_OT_start(bpy.types.Operator):
     bl_idname = "hair_arranger.start"
     bl_label = "Start hair arranger"
@@ -161,6 +162,7 @@ class HAIR_ARRANGER_OT_select_all(bpy.types.Operator):
         bpy.ops.curve.select_all(action='SELECT')
         return {'FINISHED'}
 
+
 class HAIR_ARRANGER_OT_select_all_starts(bpy.types.Operator):
     bl_idname = "hair_arranger.select_all_starts"
     bl_label = "Start hair arranger"
@@ -178,6 +180,28 @@ class HAIR_ARRANGER_OT_select_all_starts(bpy.types.Operator):
             else:
                 s.points[0].select = True
         return {'FINISHED'}
+
+
+class HAIR_ARRANGER_OT_select_all_middles(bpy.types.Operator):
+    bl_idname = "hair_arranger.select_all_middles"
+    bl_label = "Start hair arranger"
+
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D'
+
+    def execute(self, context):
+        bpy.ops.curve.select_all(action='DESELECT')
+        splines = bpy.context.object.data.splines
+        for s in splines:
+            if s.type == "BEZIER" and len(s.bezier_points) > 1:
+                for p in s.bezier_points[1:-1]:
+                    p.select_control_point = True
+            elif len(s.points) > 1:
+                for p in s.points[1:-1]:
+                    p.select = True
+        return {'FINISHED'}
+
 
 class HAIR_ARRANGER_OT_select_all_ends(bpy.types.Operator):
     bl_idname = "hair_arranger.select_all_ends"
@@ -245,12 +269,72 @@ def _get_selected_curves():
             for p in s.bezier_points:
                 if p.select_control_point or p.select_left_handle or p.select_right_handle:
                     selected_splines.append(s)
+                    break
         else:
             for p in s.points:
                 if p.select:
                     selected_splines.append(s)
                     break
     return selected_splines
+
+
+class HAIR_ARRANGER_OT_separate_curves(bpy.types.Operator):
+    bl_idname = "hair_arranger.separate_curves"
+    bl_label = "Start hair arranger"
+
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D'
+
+    def execute(self, context):
+        selected_splines = _get_selected_curves()
+        _separate_each_splines(selected_splines)
+
+        if selected_splines:
+            bpy.ops.object.mode_set(mode='OBJECT')
+            bpy.ops.object.move_to_collection(collection_index=0, is_new=True,
+                                              new_collection_name="separated_haircurves")
+        return {'FINISHED'}
+
+
+def _separate_each_splines(splines):
+    _separate_splines_main(splines)
+
+    selected_objects = bpy.context.selected_objects
+    if selected_objects and len(selected_objects) > 1:
+        generated_curve = bpy.context.selected_objects[1]
+        _separate_splines_itr(generated_curve)
+
+
+def _separate_splines_itr(curve):
+    bpy.context.view_layer.objects.active = curve
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.curve.select_all(action='DESELECT')
+    splines = bpy.context.object.data.splines
+    if len(splines) > 1:
+        _separate_splines_main(splines[:-1])
+    else:
+        return
+
+    selected_objects = bpy.context.selected_objects
+    for selected_obj in selected_objects:
+        if selected_obj.name != bpy.context.object.name:
+            _separate_splines_itr(selected_obj)
+
+
+def _separate_splines_main(splines):
+    for s in splines:
+        print("s", s)
+        if s.type == "BEZIER":
+            points = s.bezier_points
+            for p in points:
+                p.select_control_point = True
+        else:
+            points = s.points
+            for p in points:
+                p.select = True
+    if splines:
+        bpy.ops.curve.separate()
 
 
 class HAIR_ARRANGER_OT_convert_to_mesh(bpy.types.Operator):
@@ -262,13 +346,10 @@ class HAIR_ARRANGER_OT_convert_to_mesh(bpy.types.Operator):
         return context.area.type == 'VIEW_3D'
 
     def execute(self, context):
-        # Convert to mesh
         bpy.ops.object.mode_set(mode='OBJECT')
         bpy.ops.object.convert(target='MESH')
 
-        # Smooth mesh
         bpy.ops.object.shade_smooth()
-
         bpy.ops.object.mode_set(mode='EDIT')
 
         return {'FINISHED'}
@@ -276,8 +357,9 @@ class HAIR_ARRANGER_OT_convert_to_mesh(bpy.types.Operator):
 
 classes = [HAIR_ARRANGER_OT_start, HAIR_ARRANGER_OT_start_arrange,
            HAIR_ARRANGER_OT_select_points, HAIR_ARRANGER_OT_select_all,
-           HAIR_ARRANGER_OT_select_all_ends, HAIR_ARRANGER_OT_select_all_starts,
+           HAIR_ARRANGER_OT_select_all_ends, HAIR_ARRANGER_OT_select_all_middles, HAIR_ARRANGER_OT_select_all_starts,
            HAIR_ARRANGER_OT_convert_to_nurbs, HAIR_ARRANGER_OT_remove_end_points,
+           HAIR_ARRANGER_OT_separate_curves,
            HAIR_ARRANGER_OT_convert_to_mesh]
 
 
