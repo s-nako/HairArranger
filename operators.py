@@ -30,6 +30,7 @@ ROOT_NAME = "haircurves"
 class HAIR_ARRANGER_OT_start(bpy.types.Operator):
     bl_idname = "hair_arranger.start"
     bl_label = "Start hair arranger"
+    bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context):
@@ -131,6 +132,7 @@ class HAIR_ARRANGER_OT_start_arrange(bpy.types.Operator):
 class HAIR_ARRANGER_OT_select_points(bpy.types.Operator):
     bl_idname = "hair_arranger.select_points"
     bl_label = "Start hair arranger"
+    bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context):
@@ -153,6 +155,7 @@ class HAIR_ARRANGER_OT_select_points(bpy.types.Operator):
 class HAIR_ARRANGER_OT_select_all(bpy.types.Operator):
     bl_idname = "hair_arranger.select_all"
     bl_label = "Start hair arranger"
+    bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context):
@@ -166,6 +169,7 @@ class HAIR_ARRANGER_OT_select_all(bpy.types.Operator):
 class HAIR_ARRANGER_OT_select_all_starts(bpy.types.Operator):
     bl_idname = "hair_arranger.select_all_starts"
     bl_label = "Start hair arranger"
+    bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context):
@@ -185,6 +189,7 @@ class HAIR_ARRANGER_OT_select_all_starts(bpy.types.Operator):
 class HAIR_ARRANGER_OT_select_all_middles(bpy.types.Operator):
     bl_idname = "hair_arranger.select_all_middles"
     bl_label = "Start hair arranger"
+    bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context):
@@ -206,6 +211,7 @@ class HAIR_ARRANGER_OT_select_all_middles(bpy.types.Operator):
 class HAIR_ARRANGER_OT_select_all_ends(bpy.types.Operator):
     bl_idname = "hair_arranger.select_all_ends"
     bl_label = "Start hair arranger"
+    bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context):
@@ -226,6 +232,7 @@ class HAIR_ARRANGER_OT_select_all_ends(bpy.types.Operator):
 class HAIR_ARRANGER_OT_convert_to_nurbs(bpy.types.Operator):
     bl_idname = "hair_arranger.convert_to_nurbs"
     bl_label = "Start hair arranger"
+    bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context):
@@ -239,6 +246,7 @@ class HAIR_ARRANGER_OT_convert_to_nurbs(bpy.types.Operator):
 class HAIR_ARRANGER_OT_remove_end_points(bpy.types.Operator):
     bl_idname = "hair_arranger.remove_end_points"
     bl_label = "Start hair arranger"
+    bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context):
@@ -281,6 +289,7 @@ def _get_selected_curves():
 class HAIR_ARRANGER_OT_separate_curves(bpy.types.Operator):
     bl_idname = "hair_arranger.separate_curves"
     bl_label = "Start hair arranger"
+    bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context):
@@ -340,6 +349,7 @@ def _separate_splines_main(splines):
 class HAIR_ARRANGER_OT_convert_to_mesh(bpy.types.Operator):
     bl_idname = "hair_arranger.convert_to_mesh"
     bl_label = "Start hair arranger"
+    bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context):
