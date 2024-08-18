@@ -119,6 +119,7 @@ def _append_spline_curves(obj):
 class HAIR_ARRANGER_OT_start_arrange(bpy.types.Operator):
     bl_idname = "hair_arranger.start_arrange"
     bl_label = "Start hair arranger"
+    bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context):
