@@ -83,11 +83,13 @@ class HAIR_ARRANGER_PT_arrange_panel(bpy.types.Panel):
         col.prop(bpy.context.scene.tool_settings.curve_paint_settings, 'use_stroke_endpoints', text='Snap Only First')
         col.prop(bpy.context.scene.tool_settings.curve_paint_settings, 'surface_plane', text='Surface')
         row = self.layout.row()
+        row.prop(bpy.context.space_data.overlay, "show_curve_normals", text='Normal Visibility')
         row.prop(bpy.context.space_data.overlay, "normals_length", text='Normal Display Length')
 
         box = self.layout.box()
         row = box.row(align=True)
         col = row.column(align=True)
+        col.prop(bpy.context.scene.tool_settings.curve_paint_settings, 'error_threshold', text='Tolerance')
         col.prop(bpy.context.scene.tool_settings.curve_paint_settings, 'surface_offset', text='offset',
                  slider=True)
         col.prop(bpy.context.scene.tool_settings.curve_paint_settings, 'radius_taper_start', text='Taper start',
