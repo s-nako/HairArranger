@@ -19,6 +19,7 @@
 import bpy
 from bpy.types import Panel
 
+from hair_arranger.operators import ROOT_NAME
 
 # Panels
 class HAIR_ARRANGER_PT_pre_panel(bpy.types.Panel):
@@ -105,6 +106,10 @@ class HAIR_ARRANGER_PT_arrange_panel(bpy.types.Panel):
         col.prop(bpy.context.object.data, "bevel_factor_start", text="Bevel Start")
         col.prop(bpy.context.object.data, "bevel_factor_end", text="Bevel End")
         col.prop(bpy.context.object.data, "bevel_object", text="Object")
+        box = self.layout.box()
+        row = box.row(align=True)
+        row.prop(bpy.data.objects[ROOT_NAME], "scale", index=0, text="Scale X")
+        row.prop(bpy.data.objects[ROOT_NAME], "scale", index=1, text="Scale Y")
 
         box = self.layout.box()
         col = box.column(align=True)

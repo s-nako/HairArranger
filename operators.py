@@ -100,7 +100,6 @@ def _append_spline_curves(obj):
 
     x = obj.location.x + obj.dimensions.x * 3 / 5
     z = obj.location.z + obj.dimensions.z / 2
-    root.empty_display_size = 0.1
     root.location = (x, 0.0, z)
     for i in range(3):
         root.lock_rotation[i] = True
@@ -110,11 +109,32 @@ def _append_spline_curves(obj):
         if not curve.name.startswith("haircurve"):
             continue
         curve.parent = root
-        curve.scale = (0.1, 0.1, 0.1)
         bpy.data.collections[HAIR_CURVE_COLLECTION].objects.unlink(curve)
         bpy.context.scene.collection.objects.link(curve)
+        _added_scale_driver(root, curve)
+        _added_scale_driver(root, curve, delta_scale=True, reverse=True)  # cancel parent scaling
 
+    root.scale = (0.1, 0.1, 0.1)
     bpy.data.collections.remove(bpy.data.collections[HAIR_CURVE_COLLECTION])
+
+
+def _added_scale_driver(source, target, delta_scale=False, reverse=False):
+    SCALE_TYPES = ['SCALE_X', 'SCALE_Y', 'SCALE_Y']
+    for index, scale in enumerate(SCALE_TYPES):
+        if delta_scale:
+            driver = target.driver_add("delta_scale", index).driver
+        else:
+            driver = target.driver_add("scale", index).driver
+        var = driver.variables.new()
+        var.name = "scale"
+        var.type = 'TRANSFORMS'
+        var.targets[0].id = source
+        var.targets[0].transform_space = 'LOCAL_SPACE'
+        var.targets[0].transform_type = SCALE_TYPES[index]
+        if reverse:
+            driver.expression = "1/scale"
+        else:
+            driver.expression = "scale"
 
 
 class HAIR_ARRANGER_OT_start_arrange(bpy.types.Operator):
