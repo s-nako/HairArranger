@@ -26,7 +26,7 @@ bl_info = {
     "name": "Hair Arranger",
     "author": "Nako",
     "version": (0, 8),
-    "blender": (2, 80, 0),
+    "blender": (4, 2, 0),
     "description": "Generate, modify and set anime-like hair",
     "doc_url": "TODO",
     "category": "Mesh",

@@ -17,8 +17,6 @@
 # ##### END GPL LICENSE BLOCK #####
 
 import bpy
-from bpy.types import Panel
-
 from hair_arranger.operators import ROOT_NAME
 
 # Panels

@@ -18,9 +18,7 @@
 # ##### END GPL LICENSE BLOCK #####
 
 import os
-
 import bpy
-from bpy.types import Operator
 
 FILE_NAME = "hair_curves.blend"
 HAIR_CURVE_COLLECTION = "HairCurveSamples"
@@ -37,6 +35,7 @@ class HAIR_ARRANGER_OT_start(bpy.types.Operator):
         return context.area.type == 'VIEW_3D'
 
     def execute(self, context):
+        bpy.ops.object.mode_set(mode='OBJECT')
         obj = bpy.context.object
         if not obj:
             return
@@ -52,8 +51,7 @@ class HAIR_ARRANGER_OT_start(bpy.types.Operator):
         # Set draw tool as active
         for area in bpy.context.screen.areas:
             if area.type == "VIEW_3D":
-                override = bpy.context.copy()
-                bpy.ops.wm.tool_set_by_id(override, name="builtin.draw")
+                bpy.ops.wm.tool_set_by_id(name="builtin.draw")
 
         # Set snapping on (off at end)
         bpy.context.scene.tool_settings.snap_elements = {'FACE'}
