@@ -80,10 +80,11 @@ class HAIR_ARRANGER_OT_start(bpy.types.Operator):
         bpy.context.object.data.offset = 0
         bpy.context.object.data.bevel_depth = 1.0 / 25
         bpy.context.object.data.bevel_resolution = 4
-        bpy.context.object.data.bevel_object = None
         bpy.context.object.data.bevel_factor_start = 0
         bpy.context.object.data.bevel_factor_end = 1
 
+        bpy.context.object.data.bevel_mode = 'OBJECT'
+        bpy.context.object.data.bevel_object = bpy.data.objects["haircurve_circle"]
         return {'FINISHED'}
 
 
@@ -334,7 +335,6 @@ def _separate_splines_itr(curve):
 
 def _separate_splines_main(splines):
     for s in splines:
-        print("s", s)
         if s.type == "BEZIER":
             points = s.bezier_points
             for p in points:
