@@ -1,6 +1,7 @@
 # HairArranger
-This Belnder add-on is a collection of properties and scripts that helps designers to generate, modify, and set stylized hair.
-**This is under development!!**
+This Belnder add-on is a collection of properties and scripts that helps designers to generate, modify, and set stylized hair.\
+**This is under development!!** <br/><br/>
+[![](https://img.youtube.com/vi/IdA8vOoua7w/0.jpg)](https://www.youtube.com/watch?v=IdA8vOoua7w)
 
 ## Installation
 Download and put the 'hair_arranger' folder in your Blender addons folder or use the 'Install from File...' menu on Blender.
