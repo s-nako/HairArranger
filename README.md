@@ -53,6 +53,13 @@ You can see the detail of each property in Blender documentation, [Draw](https:/
 * **Spearate Curve**s: Separate all curves into each single curve objects. This can be used for reconstruct the hair object into small objects.
 * **Convert to Mesh**: Convert all curves into mesh object. The resolution depends on the curve resolution.
 
+### How to add custom haircurve
+Open hair_arranger/hair_curves.blend and add your custom curve with the name which **starts from "haircurve_"**. \
+![image](https://github.com/user-attachments/assets/8307c12c-a582-4af7-8794-4e43393a43ea)
+\
+Then the curve will be automatically loaded into the haircurves locator and can be selected on the UI.\
+![image](https://github.com/user-attachments/assets/7c29df93-ed2f-4124-b25d-1e4f532a11f3)
+
 ## Caution
 This is under development and it may contain some critical bugs. \
 Please note that we will not be liable for any damages caused by use of this add-on and scripts.
